@@ -34,7 +34,7 @@ for index, row in df.iterrows():
 
 # Build the model and load the weights from a file
 model = mycnn.build_model()
-model.load_weights('saved_model.h5')
+model.load_weights('model_result.h5')
 
 # Predict images
 p = model.predict(np.asarray(np_list_images))

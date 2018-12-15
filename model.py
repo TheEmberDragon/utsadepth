@@ -8,6 +8,14 @@ from keras import backend
 from keras import optimizers
 from keras.layers import LeakyReLU
 
+# Define neural network stuff
+learning_rate = 0.00004
+clip_value = 1.0
+
+
+# Define a custom optimizer that may be used
+optimizer = optimizers.sgd(lr=learning_rate, clipvalue=clip_value)
+
 # Peak Signal to Noise Ratio
 def psnr(y_true,y_pred):
     mse = K.mean(y_true - y_pred) ** 2
@@ -30,5 +38,5 @@ def build_model():
     lays = layers.Reshape(target_shape=(120,160))(lays)
 
     model = keras.models.Model(inputs=[layer_one_input], outputs=lays)
-    model.compile(optimizer='sgd', loss='mean_squared_error', metrics=['accuracy', psnr])
+    model.compile(optimizer=optimizer, loss='mean_squared_logarithmic_error', metrics=['accuracy', psnr])
     return model

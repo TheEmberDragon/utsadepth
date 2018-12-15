@@ -8,16 +8,11 @@ import sklearn.metrics as metrics
 from keras import optimizers
 from skimage.transform import rescale, resize, downscale_local_mean
 
-# Define neural network stuff
-learning_rate = 0.001
-clip_value = 1.0
-epochs = 300
-
-# Define a custom optimizer that may be used
-# optimizer = optimizers.sgd(lr=learning_rate, clipvalue=clip_value)
+# Define number of epochs
+epochs = 5
 
 # Read the training data into a csv
-df = pd.read_csv('train.csv',header=None, names=['Images','Depths'], nrows=1000)
+df = pd.read_csv('train.csv',header=None, names=['Images','Depths'], nrows=2)
 
 # Create empty lists to be used
 np_list_images = []
@@ -25,10 +20,10 @@ np_list_depths = []
 
 # Loop through the images and add them to the numpy array
 for index, row in df.iterrows():
-    print(index, row['Images'], row['Depths'])
+    # print(index, row['Images'], row['Depths'])
     
     im = cv2.imread(row['Images'],1)
-    print(im.shape)
+    # print(im.shape)
     #cv2.imshow('Real',im)
     #cv2.waitKey(0)
 
@@ -51,4 +46,6 @@ model.summary()
 model.fit(np.asarray(np_list_images),np.asarray(np_list_depths),epochs=epochs)
 
 # Save every epoch
-keras.callbacks.ModelCheckpoint('saved_model.h5',monitor=psnr,verbose=0,save_best_only=False, save_weights_only=False, mode='auto')
+keras.callbacks.ModelCheckpoint('saved_model_checkpoint.h5',monitor='mean_squared_logarithmic_error',verbose=0,save_best_only=False, save_weights_only=False, mode='auto')
+
+model.save('saved_model1.h5')
