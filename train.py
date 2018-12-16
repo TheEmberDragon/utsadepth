@@ -9,10 +9,10 @@ from keras import optimizers
 from skimage.transform import rescale, resize, downscale_local_mean
 
 # Define number of epochs
-epochs = 5
+epochs = 1000
 
 # Read the training data into a csv
-df = pd.read_csv('train.csv',header=None, names=['Images','Depths'], nrows=2)
+df = pd.read_csv('train.csv',header=None, names=['Images','Depths'], nrows=1000)
 
 # Create empty lists to be used
 np_list_images = []
@@ -34,18 +34,18 @@ for index, row in df.iterrows():
     #cv2.waitKey(0) 
 
     im = cv2.imread(row['Depths'],0)
-    np_list_depths.append(cv2.resize(im, (0,0), fx=0.25, fy=0.25))
+    np_list_depths.append(cv2.resize(im, (0,0), fx=0.125, fy=0.125))
     #cv2.imshow('Depth',depth_reduced)
     #cv2.waitKey(0)  
 
 # Build the model and print a summary
-model = mycnn.build_model()
+model = mycnn.build_paper_model()
 model.summary()
 
 # Train the model
+model.load_weights('saved_model1.h5')
 model.fit(np.asarray(np_list_images),np.asarray(np_list_depths),epochs=epochs)
+model.save('saved_model1.h5')
 
 # Save every epoch
 keras.callbacks.ModelCheckpoint('saved_model_checkpoint.h5',monitor='mean_squared_logarithmic_error',verbose=0,save_best_only=False, save_weights_only=False, mode='auto')
-
-model.save('saved_model1.h5')

@@ -28,13 +28,13 @@ for index, row in df.iterrows():
     #cv2.waitKey(0) 
 
     im = cv2.imread(row['Depths'],0)
-    np_list_depths.append(cv2.resize(im, (0,0), fx=0.25, fy=0.25))
+    np_list_depths.append(cv2.resize(im, (0,0), fx=0.125, fy=0.125))
     #cv2.imshow('Depth',depth_reduced)
     #cv2.waitKey(0)  
 
 # Build the model and load the weights from a file
-model = mycnn.build_model()
-model.load_weights('model_result.h5')
+model = mycnn.build_paper_model()
+model.load_weights('saved_model1.h5')
 
 # Predict images
 p = model.predict(np.asarray(np_list_images))
@@ -53,5 +53,5 @@ predict = np.array(p)
 test = cv2.normalize(predict[0], None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 cv2.imshow('Fake Images',test)
 cv2.imwrite("pic_normalized.png",test)
-cv2.imwrite("generated_pic.png",predict[1])
-cv2.imwrite("Expected pic.png",np_list_depths[1])
+cv2.imwrite("generated_pic.png",predict[0])
+cv2.imwrite("Expected pic.png",np_list_depths[0])
